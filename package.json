@@ -1,0 +1,26 @@
+{
+  "name": "linkr-backend",
+  "version": "1.0.0",
+  "description": "Backend relativo ao projeto em grupo Linkr da formação de HardSkills DRIVEN",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuliaBotelho/Linkr-Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuliaBotelho/Linkr-Backend/issues"
+  },
+  "homepage": "https://github.com/JuliaBotelho/Linkr-Backend#readme",
+  "dependencies": {
+    "nodemon": "^2.0.20",
+    "pg": "^8.8.0"
+  }
+}
