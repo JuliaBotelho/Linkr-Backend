@@ -1,2 +1,1 @@
-
-export async function deletePost(req, res) 
+export async function deletePost(req, res) {}
