@@ -1,3 +1,5 @@
+import { connection } from "../database/server.js";
+
 export async function authRoutesValidation(req, res, next) {
     const { authorization } = req.headers
     const token = authorization?.replace("Bearer ", "");
@@ -15,7 +17,6 @@ export async function authRoutesValidation(req, res, next) {
             return
         }
         res.locals.userId = userResult.rows[0].id
-
 
     } catch(err) {
         console.log(err);

@@ -4,6 +4,6 @@ import { authRoutesValidation } from "../middlewares/auth.Validation.middlewares
 
 const postsRoutes = Router()
 
-postsRoutes.delete("/posts/:id", authRoutesValidation, deletePost)
+postsRoutes.delete("/posts/:id",authRoutesValidation, deletePost)
 
 export default postsRoutes
