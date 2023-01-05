@@ -25,6 +25,20 @@ export async function createUser(req, res) {
   }
 }
 
+export async function findUser(req, res) {
+  const { id } = req.params;
+
+  try {
+    const user = await connection.query("SELECT * FROM users WHERE id=($1);", [
+      id,
+    ]);
+
+    res.status(200).send(user.rows);
+  } catch (err) {
+    res.status(500).send(err);
+    }
+  }
+    
 export async function userSignIn(req, res) {
   const { email, password } = req.body;
   try {
