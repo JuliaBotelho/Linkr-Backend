@@ -4,6 +4,8 @@ import userNameSchema from "../models/search.schema.js";
 export async function searchUser(req, res) {
   const { userName } = req.body;
 
+  console.log(userName)
+
   const { error } = userNameSchema.validate(userName, { abortEarly: false });
 
   if (error) {
