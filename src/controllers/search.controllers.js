@@ -13,7 +13,7 @@ export async function searchUser(req, res) {
 
   try {
     const users = await connection.query(
-      `SELECT * FROM users WHERE "userName" LIKE $1;`,
+      `SELECT u.id, u."userName", u.picture FROM users u WHERE "userName" LIKE $1;`,
       [`${userName}%`]
     );
 
