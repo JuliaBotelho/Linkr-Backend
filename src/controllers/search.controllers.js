@@ -2,11 +2,9 @@ import { connection } from "../database/server.js";
 import userNameSchema from "../models/search.schema.js";
 
 export async function searchUser(req, res) {
-  const { userName } = req.body;
+  const  userName = req.params.username;
 
-  console.log(userName)
-
-  const { error } = userNameSchema.validate(userName, { abortEarly: false });
+  const { error } = userNameSchema.validate({userName}, { abortEarly: false });
 
   if (error) {
     const errors = error.details.map((detail) => detail.message);
