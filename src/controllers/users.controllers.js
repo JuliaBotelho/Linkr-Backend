@@ -36,9 +36,9 @@ export async function findUser(req, res) {
     res.status(200).send(user.rows);
   } catch (err) {
     res.status(500).send(err);
-    }
   }
-    
+}
+
 export async function userSignIn(req, res) {
   const { email, password } = req.body;
   try {
