@@ -1,4 +1,5 @@
 import { connection } from "../database/server.js";
+import getMetaData from "metadata-scraper";
 
 export async function deletePost(req, res) {
    const { id } = req.params
@@ -55,24 +56,32 @@ export async function updatePost(req, res) {
 }
 
 export async function createPost(req, res) {
-   const  userid  = res.locals.userId;
-   const  post  = req.body;
-   
-   try{
-      await connection.query(`INSERT INTO posts("userId", description, link) VALUES ($1,$2,$3);`,[userid,post.text, post.link]); 
+   const userid = res.locals.userId;
+   const post = req.body;
+
+   const metadata = await getMetaData(post.link);
+
+   try {
+      await connection.query(`INSERT INTO posts("userId", description, link,title, preview, pic) VALUES ($1,$2,$3,$4,$5,$6);`, [userid, post.text, post.link, metadata?.title, metadata?.description, metadata?.image || metadata?.icon]);
 
       res.sendStatus(201);
-   }catch(error){
+   } catch (error) {
       console.log(error);
       return res.status(500).send(error.message);
    }
 }
 
 export async function timelinePosts(req, res) {
-   try{
-      const latestPosts = await connection.query(`SELECT users."userName" AS name, users.picture, posts.id ,posts.description AS text, posts.link FROM posts JOIN users on users.id = posts."userId" ORDER BY posts.id DESC LIMIT 20;`);
-      res.send(latestPosts.rows)
-   }catch (error){
+   const postData = []
+
+   try {
+      const latestPosts = await connection.query(`SELECT users."userName" AS name, users.picture, posts.id ,posts.description AS text, posts.link, posts.title, posts.preview, posts.pic FROM posts JOIN users on users.id = posts."userId" ORDER BY posts.id DESC LIMIT 20;`);
+
+      res.send(latestPosts.rows).status(201)
+
+   } catch (error) {
       return res.status(500).send(error.message);
    }
 }
+
+
