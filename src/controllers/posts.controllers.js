@@ -58,12 +58,22 @@ export async function updatePost(req, res) {
 export async function createPost(req, res) {
    const userid = res.locals.userId;
    const post = req.body;
-
    const metadata = await getMetaData(post.link);
+   const hashtags = []
+
+   const regexp = /(#[a-z0-9][a-z0-9\-_]*)/ig
+
+   const hashtagsArray = post.text.match(regexp)
+
+   hashtagsArray.map((h)=> {
+      if (h.includes("#")){
+         hashtags.push(h.replace("#",""))
+      }
+   })
+
 
    try {
-      await connection.query(`INSERT INTO posts("userId", description, link,title, preview, pic) VALUES ($1,$2,$3,$4,$5,$6);`, [userid, post.text, post.link, metadata?.title, metadata?.description, metadata?.image || metadata?.icon]);
-
+      await connection.query(`INSERT INTO posts("userId", description, link,title, preview, pic, hashtag) VALUES ($1,$2,$3,$4,$5,$6,$7);`, [userid, post.text, post.link, metadata?.title, metadata?.description, metadata?.image || metadata?.icon,hashtags[0]]);
       res.sendStatus(201);
    } catch (error) {
       console.log(error);
