@@ -9,3 +9,5 @@ export const connection = new Pool({
   ssl : true,
 });
 
+/* {connectionString: process.env.DATABASE_URL /* 
+ssl : true, */
