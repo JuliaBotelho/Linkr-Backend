@@ -54,7 +54,7 @@ export async function userSignIn(req, res) {
       ]);
       res.status(200).send(token);
     } else {
-      return res.sendStatus(401);
+      return res.status(401).send("E-mail ou senha incorreto");
     }
   } catch (err) {
     res.sendStatus(400);
