@@ -68,7 +68,7 @@ export async function userSignIn(req, res) {
         token,
         loginTest.rows[0].email,
       ]);
-      res.status(200).send(token);
+      res.status(200).send({ id:loginTest.rows[0].id, token});
     } else {
       return res.status(401).send("E-mail ou senha incorreto");
     }
