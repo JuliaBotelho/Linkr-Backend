@@ -2,6 +2,22 @@ import { connection } from "../database/server.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 
+export async function infoUser(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+
+  try {
+    const userInfos = await connection.query(
+      "SELECT * FROM users WHERE token=($1);",
+      [token]
+    );
+    res.status(200).send(userInfos.rows);
+  } catch (err) {
+    res.sendStatus(400);
+    console.log(err);
+  }
+}
+
 export async function createUser(req, res) {
   const { email, password, username, picture } = req.body;
   try {
