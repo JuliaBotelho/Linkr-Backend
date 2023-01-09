@@ -5,7 +5,8 @@ export async function authRoutesValidation(req, res, next) {
     const token = authorization?.replace("Bearer ", "");
     
     if(!token){
-        res.sendStatus(401)
+        console.log("sem token")
+        res.status(401).send("sem token")
         return
     }
 
