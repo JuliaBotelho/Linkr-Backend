@@ -45,11 +45,22 @@ export async function findUser(req, res) {
   const { id } = req.params;
 
   try {
-    const user = await connection.query("SELECT * FROM users WHERE id=($1);", [
-      id,
-    ]);
+    const fullUser = await connection.query(
+      `SELECT u."userName" AS name, u.picture, u.id AS "userId", p.id,
+      p.description AS text, p.link, p.title, p.preview, p.pic 
+      FROM posts p
+      JOIN users u 
+      ON u.id = p."userId"
+      WHERE p."userId" = $1;`
+      /*`SELECT p.*, u.*
+      FROM posts p
+      JOIN users u
+      ON u.id = p."userId"
+      WHERE p."userId" = $1;`*/,
+      [id]
+    );
 
-    res.status(200).send(user.rows);
+    res.status(200).send(fullUser.rows);
   } catch (err) {
     res.status(500).send(err);
   }

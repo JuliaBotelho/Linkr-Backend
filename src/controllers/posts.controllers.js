@@ -75,7 +75,7 @@ export async function timelinePosts(req, res) {
    const postData = []
 
    try {
-      const latestPosts = await connection.query(`SELECT users."userName" AS name, users.picture, posts.id ,posts.description AS text, posts.link, posts.title, posts.preview, posts.pic FROM posts JOIN users on users.id = posts."userId" ORDER BY posts.id DESC LIMIT 20;`);
+      const latestPosts = await connection.query(`SELECT users."userName" AS name, users.picture, users.id AS "userId", posts.id ,posts.description AS text, posts.link, posts.title, posts.preview, posts.pic FROM posts JOIN users on users.id = posts."userId" ORDER BY posts.id DESC LIMIT 20;`);
 
       res.send(latestPosts.rows).status(201)
 
