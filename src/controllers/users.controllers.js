@@ -44,23 +44,31 @@ export async function createUser(req, res) {
 export async function findUser(req, res) {
   const { id } = req.params;
 
+
   try {
-    const fullUser = await connection.query(
+    const posts = await connection.query(
       `SELECT u."userName" AS name, u.picture, u.id AS "userId", p.id,
-      p.description AS text, p.link, p.title, p.preview, p.pic 
-      FROM posts p
-      JOIN users u 
-      ON u.id = p."userId"
-      WHERE p."userId" = $1;`
-      /*`SELECT p.*, u.*
+      p.description AS text, p.link, p.title, p.preview, p.pic
       FROM posts p
       JOIN users u
       ON u.id = p."userId"
-      WHERE p."userId" = $1;`*/,
+      WHERE p."userId" = $1;`,
       [id]
     );
 
-    res.status(200).send(fullUser.rows);
+    const user = await connection.query(
+      `SELECT u."userName" AS name, u.picture, u.id AS "userId"
+      FROM users u
+      WHERE u.id = $1;`,
+      [id]
+    );
+
+    const userPosts = {
+      posts: posts.rows,
+      user:user.rows
+    }
+
+    res.status(200).send(userPosts);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -79,7 +87,7 @@ export async function userSignIn(req, res) {
         token,
         loginTest.rows[0].email,
       ]);
-      res.status(200).send({ id:loginTest.rows[0].id, token});
+      res.status(200).send({ id: loginTest.rows[0].id, token });
     } else {
       return res.status(401).send("E-mail ou senha incorreto");
     }
