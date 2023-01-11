@@ -68,8 +68,6 @@ export async function findUser(req, res) {
       user:user.rows
     }
 
-    console.log(userPosts)
-
     res.status(200).send(userPosts);
   } catch (err) {
     res.status(500).send(err);

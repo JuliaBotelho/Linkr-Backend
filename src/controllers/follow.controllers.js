@@ -41,22 +41,6 @@ export async function following(req, res) {
       [userId]
     );
 
-    // const followedUser = following.rows.filter((id) => id.followId == newFollowingId).length
-
-    // if (!followedUser) {
-    //   await connection.query(
-    //     `INSERT INTO followers ("userId", "followId")  VALUES ($1, $2);`,
-    //     [userId, parseInt(newFollowingId)]
-    //   );
-    //   console.log("entrei")
-    //   return res.sendStatus(200);
-    // }
-
-    // await connection.query(
-    //   `DELETE FROM followers WHERE "userId" = $1 AND "followId" = $2;`,
-    //   [userId, parseInt(newFollowingId)]
-    // );
-
     res.status(200).send(myFollowing.rows);
 
   } catch (err) {
