@@ -35,14 +35,16 @@ export async function openHashtag(req, res) {
 
 export async function getPostHashtag(req, res) {
   const { hashtag } = req.params;
-
   try {
-    const getPostsByHashtag = await connection.query(
-      `SELECT users.id, users."userName", users.picture, posts."userId", posts.description, posts.link, posts.hashtag FROM users JOIN posts ON users.id = posts."userId"  WHERE hashtag = $1`,
+    const getPost = await connection.query(
+      `SELECT posts.id , posts."userId",posts.description,posts.link ,users."userName", users.picture  FROM posts 
+      JOIN 
+      users ON posts."userId" = users.id 
+       WHERE hashtag = $1`,
       [hashtag]
     );
 
-    res.status(200).send(getPostsByHashtag.rows);
+    res.status(200).send(getPost.rows);
   } catch (err) {
     res.sendStatus(500);
     console.log(err);
