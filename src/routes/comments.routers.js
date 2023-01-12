@@ -1,9 +1,9 @@
 import { Router } from "express"
-import { getPost, Post } from "../controllers/comments.controllers.js"
+import { getComment, createComment } from "../controllers/comments.controllers.js"
 
 const commentsRoutes = Router()
 
-commentsRoutes.get("/comments/:id",getPost)
-postsRoutes.post("/comments/:id", Post)
+commentsRoutes.get("/comments/:id",getComment)
+postsRoutes.post("/comments/:id", createComment)
 
 export default commentsRoutes
