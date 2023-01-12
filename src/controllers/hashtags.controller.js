@@ -37,7 +37,7 @@ export async function getPostHashtag(req, res) {
   const { hashtag } = req.params;
   try {
     const getPost = await connection.query(
-      `SELECT posts.id , posts."userId",posts.description,posts.link ,users."userName", users.picture  FROM posts 
+      `SELECT posts.*,users."userName", users.picture  FROM posts 
       JOIN 
       users ON posts."userId" = users.id 
        WHERE hashtag = $1`,
