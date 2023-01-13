@@ -73,7 +73,7 @@ export async function createPost(req, res) {
    }
    
    try {
-      await connection.query(`INSERT INTO posts("userId", description, link,title, preview, pic, hashtag) VALUES ($1,$2,$3,$4,$5,$6,$7);`, [userid, post.text, post.link, metadata?.title, metadata?.description, metadata?.image || metadata?.icon,hashtags[0]]);
+      await connection.query(`INSERT INTO posts("userId", description, link,title, preview, pic, hashtag, isrepost) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);`, [userid, post.text, post.link, metadata?.title, metadata?.description, metadata?.image || metadata?.icon,hashtags, false]);
       res.sendStatus(201);
    } catch (error) {
       console.log(error);
@@ -82,10 +82,9 @@ export async function createPost(req, res) {
 }
 
 export async function timelinePosts(req, res) {
-   const postData = []
 
    try {
-      const latestPosts = await connection.query(`SELECT users."userName" AS name, users.picture, users.id AS "userId", posts.id ,posts.description AS text, posts.link, posts.title, posts.preview, posts.pic FROM posts JOIN users on users.id = posts."userId" ORDER BY posts.id DESC LIMIT 20;`);
+      const latestPosts = await connection.query(`SELECT users."userName" AS name, users.picture, users.id AS "userId", posts.id ,posts.description AS text, posts.link, posts.title, posts.preview, posts.pic, posts.isrepost, posts.reposter, posts."originalPostId", posts."repostCount" FROM posts JOIN users on users.id = posts."userId" ORDER BY posts.id DESC LIMIT 20;`);
 
       res.send(latestPosts.rows).status(201)
 
@@ -94,4 +93,22 @@ export async function timelinePosts(req, res) {
    }
 }
 
+export async function sharePost(req, res){
+   const repostedInfo = res.locals.repostedInfo
+   const reposterName = res.locals.reposterName
 
+   const newShareCount = Number(repostedInfo.repostCount) + 1;
+
+   try{
+      await connection.query(`UPDATE posts SET "repostCount"=$1 WHERE id=$2;`,[newShareCount, repostedInfo.id])
+
+      await connection.query(`UPDATE posts SET "repostCount"=$1 WHERE "originalPostId"=$2;`,[newShareCount, repostedInfo.id])
+
+      await connection.query(`INSERT INTO posts("userId", description, link, title, preview, pic, hashtag,isrepost, reposter,"originalPostId", "repostCount") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`,[repostedInfo.userId,repostedInfo.description, repostedInfo.link, repostedInfo.title, repostedInfo.preview, repostedInfo.pic, repostedInfo.hashtag,true, reposterName.userName,repostedInfo.id, newShareCount])
+      
+      res.sendStatus(201);
+   }catch(error){
+      console.log(error)
+      res.sendStatus(500);
+   }
+}
