@@ -6,6 +6,7 @@ import postsRoutes from "./routes/posts.routes.js";
 import routerHashatgs from "./routes/hashtags.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import followRouter from "./routes/follow.routers.js";
+import commentsRoutes from "./routes/comments.routers.js";
 
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(usersRoutes);
 app.use(routerHashatgs);
 app.use(searchRoutes);
 app.use(followRouter);
+app.use(commentsRoutes);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Server running in port ${port}`));

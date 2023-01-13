@@ -44,7 +44,6 @@ export async function createUser(req, res) {
 export async function findUser(req, res) {
   const { id } = req.params;
 
-
   try {
     const posts = await connection.query(
       `SELECT u."userName" AS name, u.picture, u.id AS "userId", p.id,
@@ -65,8 +64,8 @@ export async function findUser(req, res) {
 
     const userPosts = {
       posts: posts.rows,
-      user:user.rows
-    }
+      user: user.rows,
+    };
 
     res.status(200).send(userPosts);
   } catch (err) {
@@ -76,23 +75,29 @@ export async function findUser(req, res) {
 
 export async function userSignIn(req, res) {
   const { email, password } = req.body;
+  console.log(req.body);
   try {
     const token = uuid();
     const loginTest = await connection.query(
       "SELECT * FROM users WHERE email=($1);",
       [email]
     );
+    console.log(loginTest.rows);
     if (loginTest && bcrypt.compareSync(password, loginTest.rows[0].password)) {
       await connection.query("UPDATE users SET token = $1 WHERE email = $2", [
         token,
         loginTest.rows[0].email,
       ]);
-      res.status(200).send({ id: loginTest.rows[0].id, token });
+      res.status(200).send({
+        id: loginTest.rows[0].id,
+        token,
+        picture: loginTest.rows[0].picture,
+      });
     } else {
       return res.status(401).send("E-mail ou senha incorreto");
     }
   } catch (err) {
-    res.sendStatus(400);
+    res.status(401).send("E-mail ou senha incorreto");
     console.log(err);
   }
 }
