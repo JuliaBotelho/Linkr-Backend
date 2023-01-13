@@ -100,7 +100,7 @@ export async function timelinePosts(req, res) {
   try {
     const { limit, offset } = req.query;
     const latestPosts = await connection.query(
-      `SELECT users."userName" AS name, users.picture, users.id AS "userId", posts.id ,posts.description AS text, posts.link, posts.title, posts.preview, posts.pic FROM posts JOIN users on users.id = posts."userId" ORDER BY posts.id DESC LIMIT $1 OFFSET $2;`,
+      `SELECT users."userName" AS name, users.picture, users.id AS "userId", posts.id ,posts.description AS text, posts.link, posts.title, posts.preview, posts.pic, posts.isrepost, posts.reposter, posts."originalPostId", posts."repostCount" FROM posts JOIN users on users.id = posts."userId" ORDER BY posts.id DESC LIMIT $1 OFFSET $2;`,
       [limit, offset]
     );
     const postData = latestPosts.rows;
@@ -109,4 +109,24 @@ export async function timelinePosts(req, res) {
     console.log(error);
     return res.status(500).send(error.message);
   }
+}
+
+export async function sharePost(req, res){
+   const repostedInfo = res.locals.repostedInfo
+   const reposterName = res.locals.reposterName
+
+   const newShareCount = Number(repostedInfo.repostCount) + 1;
+
+   try{
+      await connection.query(`UPDATE posts SET "repostCount"=$1 WHERE id=$2;`,[newShareCount, repostedInfo.id])
+
+      await connection.query(`UPDATE posts SET "repostCount"=$1 WHERE "originalPostId"=$2;`,[newShareCount, repostedInfo.id])
+
+      await connection.query(`INSERT INTO posts("userId", description, link, title, preview, pic, hashtag,isrepost, reposter,"originalPostId", "repostCount") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`,[repostedInfo.userId,repostedInfo.description, repostedInfo.link, repostedInfo.title, repostedInfo.preview, repostedInfo.pic, repostedInfo.hashtag,true, reposterName.userName,repostedInfo.id, newShareCount])
+      
+      res.sendStatus(201);
+   }catch(error){
+      console.log(error)
+      res.sendStatus(500);
+   }
 }
