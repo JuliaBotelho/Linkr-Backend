@@ -19,9 +19,8 @@ export async function createComment(req,res) {
     const userId = res.locals.userId;
     const { comment } = req.body;
     try {
-      const comments = await connection.query(`INSERT INTO comments ("postId", "userId", comment) VALUES ($1,$2,$3)`,[id, userId, comment])
-      console.log(comments)
-   
+      await connection.query(`INSERT INTO comments ("postId", "userId", comment) VALUES ($1,$2,$3)`,[id, userId, comment])
+      res.sendStatus(201)
     } catch(err) {
       console.log(err)
      res.sendStatus(500)
