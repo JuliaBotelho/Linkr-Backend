@@ -4,6 +4,6 @@ import { getComment, createComment } from "../controllers/comments.controllers.j
 const commentsRoutes = Router()
 
 commentsRoutes.get("/comments/:id",getComment)
-postsRoutes.post("/comments/:id", createComment)
+commentsRoutes.post("/comments/:id", createComment)
 
 export default commentsRoutes
